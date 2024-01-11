@@ -16,7 +16,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.ScreenA,
+        initialConfiguration = Configuration.RoomsPreview,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -31,7 +31,7 @@ class RootComponent(
                 ScreenAComponent(
                     componentContext = context,
                     onNavigateToScreenB = { text ->
-                        navigation.pushNew(Configuration.ScreenB(text))
+                        navigation.pushNew(Configuration.Room(text))
                     }
                 )
             )
@@ -44,12 +44,34 @@ class RootComponent(
                     }
                 )
             )
+
+            is Configuration.Room -> Child.Room(
+                RoomComponent(
+                    componentContext = context,
+                    roomId = config.roomId,
+                    onGoBack = {
+                        navigation.pop()
+                    }
+                )
+            )
+
+            is Configuration.RoomsPreview -> Child.RoomsPreview(
+                RoomsPreviewComponent(
+                    componentContext = context,
+                    onNavigateToRoom =  { roomId ->
+                        navigation.pushNew(Configuration.Room(roomId))
+                    }
+                )
+            )
         }
     }
 
     sealed class Child {
         data class ScreenA(val component: ScreenAComponent): Child()
         data class ScreenB(val component: ScreenBComponent): Child()
+        data class Room(val component: RoomComponent): Child()
+
+        data class RoomsPreview(val component: RoomsPreviewComponent): Child()
     }
 
     @Serializable
@@ -59,5 +81,11 @@ class RootComponent(
 
         @Serializable
         data class ScreenB(val text: String): Configuration()
+
+        @Serializable
+        data class Room(val roomId: String): Configuration()
+
+        @Serializable
+        data object RoomsPreview: Configuration()
     }
 }

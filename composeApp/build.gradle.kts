@@ -45,6 +45,8 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.jetbrains)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
+
         }
     }
 }

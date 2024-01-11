@@ -19,6 +19,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import navigation.RootComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import screens.Room
+import screens.RoomsPreview
 import screens.ScreenA
 import screens.ScreenB
 
@@ -31,9 +33,21 @@ fun App(root: RootComponent) {
             stack = childStack,
             animation = stackAnimation(slide())
         ) { child ->
-            when(val instance = child.instance) {
+            when (val instance = child.instance) {
                 is RootComponent.Child.ScreenA -> ScreenA(instance.component)
-                is RootComponent.Child.ScreenB -> ScreenB(instance.component.text, instance.component)
+                is RootComponent.Child.ScreenB -> ScreenB(
+                    instance.component.text,
+                    instance.component
+                )
+
+                is RootComponent.Child.Room -> Room(
+                    instance.component.roomId,
+                    instance.component
+                )
+
+                is RootComponent.Child.RoomsPreview -> RoomsPreview(
+                    instance.component
+                )
             }
         }
     }
